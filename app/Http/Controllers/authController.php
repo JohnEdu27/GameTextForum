@@ -18,7 +18,7 @@ class authController extends Controller
         'password' => ['required', 'confirmed', 'min:8'],
         ]);
 
-    $user = User::create($data); // hashed by the cast
+    $user = User::create($data);
 
     Auth::login($user);
     $request->session()->regenerate();
@@ -27,9 +27,8 @@ class authController extends Controller
     }
 
 
-// Show the login view
     public function displayLogin() {
-        return view('Account.login'); // Change to 'auth.login' if your file is in views/auth/
+        return view('Account.login');
     }
 
     public function login(Request $request)
@@ -53,8 +52,6 @@ class authController extends Controller
 
 
 
-        // ... inside your authController class:
-
     public function logout(Request $request) {
         Auth::logout();
 
@@ -62,5 +59,15 @@ class authController extends Controller
         $request->session()->regenerateToken();
 
          return redirect('/login');
+    }
+
+
+
+    public function displayforgotpass() {
+        return view('Account.forgotpassword');
+    }
+
+    public function forgotpass(Request $request) {
+
     }
 }

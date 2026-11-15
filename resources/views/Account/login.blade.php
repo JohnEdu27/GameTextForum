@@ -57,6 +57,8 @@
         </form>
 
         <p class="text-center text-sm text-slate-400 mt-6">
+            <a href="{{ url('/forgotpassword') }}" class="text-indigo-400 hover:underline">Forgot Password?</a>
+        <p class="text-center text-sm text-slate-400 mt-6">
             Don't have an account? 
             <a href="{{ url('/register') }}" class="text-indigo-400 hover:underline">Sign up</a>
         </p>

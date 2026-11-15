@@ -1,84 +1,104 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'GameText Forum')</title>
-    
-    <!-- Tailwind CSS CDN + Class-based Dark Mode Config -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameText Forum - Home</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-        }
-    </script>
-
-    <!-- Prevent flash of wrong theme on page load -->
-    <script>
-        if (localStorage.getItem('theme') === 'light') {
-            document.documentElement.classList.remove('dark');
-        } else {
-            document.documentElement.classList.add('dark');
-        }
-    </script>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .font-gaming { font-family: 'Rajdhani', sans-serif; }
-    </style>
 </head>
-<body class="bg-zinc-100 dark:bg-zinc-950 text-zinc-900 dark:text-zinc-200 antialiased min-h-screen flex flex-col transition-colors duration-200">
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col">
 
     <!-- Top Navigation Bar -->
-    <header class="bg-white/95 dark:bg-zinc-900/95 border-b border-zinc-200 dark:border-zinc-800 sticky top-0 z-50 backdrop-blur transition-colors duration-200">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-            
-            <!-- Brand -->
-            <a href="{{ url('/') }}" class="flex items-center space-x-2.5 shrink-0">
-                <div class="w-9 h-9 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 flex items-center justify-center text-blue-600 dark:text-blue-500 shadow-inner">
-                    <i class="fa-solid fa-gamepad text-lg"></i>
-                </div>
-                <span class="font-gaming text-2xl font-bold tracking-wider uppercase text-zinc-900 dark:text-white">
-                    Game<span class="text-blue-600 dark:text-blue-500">Text</span> <span class="text-zinc-400 dark:text-zinc-500 text-base">Forum</span>
-                </span>
+    <header class="w-full px-8 py-4 bg-slate-800/70 backdrop-blur border-b border-slate-700/60 flex justify-between items-center shadow-md">
+        <!-- Logo -->
+        <div class="flex items-center space-x-2">
+            <a href="{{ url('/homepage') }}" class="flex items-center space-x-2">
+                <span class="text-2xl font-black text-indigo-400 tracking-wider">GameText</span>
+                <span class="text-xs uppercase bg-indigo-600/20 text-indigo-400 px-2 py-0.5 rounded font-semibold border border-indigo-500/30">Forum</span>
             </a>
+        </div>
 
-            <!-- Right Actions -->
-            <div class="flex items-center space-x-3">
-                <button class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold rounded-lg flex items-center space-x-2 transition-colors">
-                    <i class="fa-solid fa-plus text-xs"></i>
-                    <span>New Thread</span>
-                </button>
-                <form action="{{ route('logout') }}" method="POST" class="inline">
+        <!-- User Info & Logout -->
+        <div class="flex items-center space-x-4">
+            <span class="text-sm text-slate-300">Welcome, <strong class="text-white">{{ Auth::user()->name }}</strong></span>
+            
+            <form action="{{ route('logout') }}" method="POST">
                 @csrf
-                <button type="submit" 
-                    class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white text-sm font-semibold rounded-lg transition shadow-md">
+                <button type="submit" class="px-4 py-2 text-xs font-semibold bg-slate-700 hover:bg-red-600/80 text-slate-200 hover:text-white rounded-lg transition">
                     Log Out
                 </button>
-                 </form>
-                <!-- Theme Toggle Button -->
-                <button id="theme-toggle" type="button" title="Toggle Light/Dark Mode"
-                        class="w-9 h-9 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">
-                    <!-- Sun Icon (shown in dark mode) -->
-                    <i id="theme-toggle-light-icon" class="fa-solid fa-sun hidden dark:inline-block text-amber-400"></i>
-                    <!-- Moon Icon (shown in light mode) -->
-                    <i id="theme-toggle-dark-icon" class="fa-solid fa-moon inline-block dark:hidden text-zinc-700"></i>
-                </button>
-
-                <!-- Notifications -->
-                <div class="w-9 h-9 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 flex items-center justify-center text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white cursor-pointer transition-colors">
-                    <i class="fa-regular fa-bell"></i>
-                </div>
-            </div>
-
+            </form>
         </div>
     </header>
 
-    <!-- 3-Column Forum Container -->
-    <div class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <!-- Main Center Content Container -->
+    <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-8">
         
-        <!-- Left Sidebar: Categories / Boards (3 cols) -->
-        <aside class="hidden lg:block lg:col-span-3 space-y-6">
-            <div class="
+        <!-- Top Bar of Main Center Area: Date Sorter (Left) & New Post Button (Right) -->
+        <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-800">
+            
+            <!-- Date Sorter Dropdown (Top-Left of Main Center) -->
+            <form action="{{ route('saveSort') }}" method="POST" class="flex items-center space-x-3">
+                @csrf
+                <label for="date-sort" class="text-sm font-medium text-slate-400">Sort by:</label>
+                <select id="date-sort" name="sort" onchange="this.form.submit();" 
+                    class="bg-slate-800 border border-slate-700 text-slate-200 text-sm rounded-lg px-3.5 py-2 focus:outline-none focus:border-indigo-500 cursor-pointer">
+                    <option value="newest" {{ Auth::user()->sort_preferences === 'newest' ? 'selected' : '' }}>Newest First</option>
+                    <option value="oldest" {{ Auth::user()->sort_preferences === 'oldest' ? 'selected' : '' }}>Oldest First</option>
+                </select>
+            </form>
+
+            <!-- Optional Action Button on the Right -->
+            <button class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-lg shadow transition">
+                + New Post
+            </button>
+        </div>
+
+        <!-- Forum Posts Feed Area -->
+        <div id="posts-container" class="space-y-4">
+            <!-- Example Post Card 1 -->
+            <div class="post-card p-5 bg-slate-800/60 border border-slate-700/60 rounded-xl hover:border-slate-600 transition" data-date="2026-11-15">
+                <div class="flex justify-between items-start mb-2">
+                    <h2 class="text-lg font-bold text-white">Best loadout tips for competitive matches?</h2>
+                    <span class="text-xs text-slate-400">Nov 15, 2026</span>
+                </div>
+                <p class="text-sm text-slate-300 mb-3">
+                    Looking for advice on optimizing economy rounds and utility usage in ranked games.
+                </p>
+                <div class="text-xs text-indigo-400 font-medium">Posted by {{ Auth::user()->name }}</div>
+            </div>
+
+            <!-- Example Post Card 2 -->
+            <div class="post-card p-5 bg-slate-800/60 border border-slate-700/60 rounded-xl hover:border-slate-600 transition" data-date="2026-11-10">
+                <div class="flex justify-between items-start mb-2">
+                    <h2 class="text-lg font-bold text-white">Welcome to GameText Forum!</h2>
+                    <span class="text-xs text-slate-400">Nov 10, 2026</span>
+                </div>
+                <p class="text-sm text-slate-300 mb-3">
+                    Introduce yourself and share what games you're currently grinding.
+                </p>
+                <div class="text-xs text-indigo-400 font-medium">Posted by Admin</div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Simple JavaScript to make the Date Sorter work right away on the frontend -->
+    <script>
+        function sortPosts(order) {
+            const container = document.getElementById('posts-container');
+            const posts = Array.from(container.getElementsByClassName('post-card'));
+
+            posts.sort((a, b) => {
+                const dateA = new Date(a.getAttribute('data-date'));
+                const dateB = new Date(b.getAttribute('data-date'));
+                return order === 'oldest' ? dateA - dateB : dateB - dateA;
+            });
+
+            posts.forEach(post => container.appendChild(post));
+        }
+    </script>
+
+</body>
+</html>

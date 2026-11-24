@@ -19,7 +19,7 @@
 
         <!-- Choices Side (Login / Sign Up) -->
         <div class="flex items-center space-x-4">
-            <a href="{{ route('loginPage') }}" class="px-4 py-2 text-sm font-semibold text-slate-300 hover:text-indigo-400 transition">
+            <a href="{{ route('login') }}" class="px-4 py-2 text-sm font-semibold text-slate-300 hover:text-indigo-400 transition">
                 Log In
             </a>
         </div>

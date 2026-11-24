@@ -1,33 +1,45 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Support\Facades\Auth;
-use App\Models\User;
-use Illuminate\Http\Request;
 
-class authController extends Controller
+use App\Models\User;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Str;
+
+class AuthController extends Controller
 {
-    public function displayRegister() {
+    public function displayRegister()
+    {
         return view('Account.register');
     }
 
-    public function register(Request $request) {
-    $data = $request->validate([
-        'name' => ['required', 'string', 'max:255'],
-        'email' => ['required', 'email', 'unique:users'],
-        'password' => ['required', 'confirmed', 'min:8'],
+    public function register(Request $request)
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
+            'password' => ['required', 'confirmed', 'min:8'],
         ]);
 
-    $user = User::create($data);
+        // Public registration always creates a normal gamer account.
+        $user = User::create([
+            ...$data,
+            'role' => 'gamer',
+        ]);
 
-    Auth::login($user);
-    $request->session()->regenerate();
-    return redirect('/homepage');
+        $user->sendEmailVerificationNotification();
+        Auth::login($user);
+        $request->session()->regenerate();
 
+        return redirect()->route('verification.notice')
+            ->with('success', 'Your Account has been Recorded, verification-link-sent');
     }
 
-
-    public function displayLogin() {
+    public function displayLogin()
+    {
         return view('Account.login');
     }
 
@@ -38,36 +50,80 @@ class authController extends Controller
             'password' => ['required'],
         ]);
 
-        $remember = $request->boolean('remember');
-
-        if (Auth::attempt($credentials, $remember)) {
-            $request->session()->regenerate();
-            return redirect()->intended('/homepage');
+        if (!Auth::attempt($credentials, $request->boolean('remember'))) {
+            return back()->withErrors([
+                'email' => 'Invalid email or password.',
+            ])->onlyInput('email');
         }
 
-        return back()
-            ->withErrors(['email' => 'Invalid email or password.'])
-            ->onlyInput('email');
+        $request->session()->regenerate();
+        $user = Auth::user();
+
+        if (!$user->hasVerifiedEmail()) {
+            return redirect()->route('verification.notice')
+                ->with('status', 'verification-required');
+        }
+
+        return redirect()->intended(route('homepage'))->with('success', 'Welcome Back!');
     }
 
-
-
-    public function logout(Request $request) {
+    public function logout(Request $request)
+    {
         Auth::logout();
-
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-         return redirect('/login');
+        return redirect()->route('login')->with('success', 'Come Again!');
     }
 
+    public function displayWelcome() {
 
+        return view('welcome');
+    }
 
-    public function displayforgotpass() {
+    public function displayForgotPass()
+    {
         return view('Account.forgotpassword');
     }
 
-    public function forgotpass(Request $request) {
+    public function forgotPass(Request $request)
+    {
+        $request->validate(['email' => ['required', 'email']]);
 
+        $status = Password::sendResetLink($request->only('email'));
+
+        return $status === Password::RESET_LINK_SENT
+            ? back()->with('status', __($status))
+            : back()->withErrors(['email' => __($status)]);
+    }
+
+    public function displayResetPass(Request $request, string $token)
+    {
+        return view('Account.resetpassword', [
+            'token' => $token,
+            'email' => $request->query('email'),
+        ]);
+    }
+
+    public function resetPass(Request $request)
+    {
+        $credentials = $request->validate([
+            'token' => ['required'],
+            'email' => ['required', 'email'],
+            'password' => ['required', 'confirmed', 'min:8'],
+        ]);
+
+        $status = Password::reset($credentials, function (User $user, string $password) {
+            $user->forceFill([
+                'password' => $password,
+                'remember_token' => Str::random(60),
+            ])->save();
+
+            event(new PasswordReset($user));
+        });
+
+        return $status === Password::PASSWORD_RESET
+            ? redirect()->route('login')->with('status', __($status))
+            : back()->withErrors(['email' => [__($status)]]);
     }
 }

@@ -9,6 +9,20 @@
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col">
 
+    <div class="max-w-3x1 mx-auto">
+        @if (session('success'))
+            <div class="mb-4 rounded-lg bg-green-100 boarder-green-400 p-4 text-green-800">
+                <strong>Success:</strong> {{ session('success') }}
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="mb-4 rounded-lg bg-red-100 boarder-red-400 p-4 text-red-800">
+                <strong>Error:</strong> {{ session('error') }}
+            </div>
+        @endif
+    </div>
+
     <!-- Top Navigation Bar -->
     <header class="w-full px-8 py-4 bg-slate-800/70 backdrop-blur border-b border-slate-700/60 flex justify-between items-center shadow-md">
         <!-- Logo -->
@@ -22,7 +36,13 @@
         <!-- User Info & Logout -->
         <div class="flex items-center space-x-4">
             <span class="text-sm text-slate-300">Welcome, <strong class="text-white">{{ Auth::user()->name }}</strong></span>
+            <span class="text-xs uppercase tracking-wider text-indigo-300">{{ Auth::user()->role }}</span>
+            @if (Auth::user()->role === 'grandmaster')
+                <a href="{{ route('grandmaster.dashboard') }}" class="text-xs text-indigo-300 hover:text-white">Grandmaster PAGE</a>
+            @endif
             
+            @can('view-accounts') <a href="/grandmaster">Accounts</a> @endcan
+
             <form action="{{ route('logout') }}" method="POST">
                 @csrf
                 <button type="submit" class="px-4 py-2 text-xs font-semibold bg-slate-700 hover:bg-red-600/80 text-slate-200 hover:text-white rounded-lg transition">
@@ -86,18 +106,22 @@
 
     <!-- Simple JavaScript to make the Date Sorter work right away on the frontend -->
     <script>
-        function sortPosts(order) {
-            const container = document.getElementById('posts-container');
-            const posts = Array.from(container.getElementsByClassName('post-card'));
+    document.getElementById('date-sort').addEventListener('change', function(){
+        const container = document.getElementById('posts-container');
 
-            posts.sort((a, b) => {
-                const dateA = new Date(a.getAttribute('data-date'));
-                const dateB = new Date(b.getAttribute('data-date'));
-                return order === 'oldest' ? dateA - dateB : dateB - dateA;
-            });
+        const cards = Array.from(container.getElementsByClassName('post-card'));
+        const order = this.value;
 
-            posts.forEach(post => container.appendChild(post));
-        }
+        cards.sort((a, b)=> {
+            let dateA = new Date(a.getAttribute('date-date'));
+            let dateB = new Date(b.getAttribute('date-date'));
+
+            return dateA - dateB;
+        });
+
+        cards.foreach(card => container.appendChild(card));
+
+       });
     </script>
 
 </body>

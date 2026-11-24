@@ -13,6 +13,12 @@
         <h2 class="text-3xl font-bold text-center text-indigo-400 mb-6">GameText Forum</h2>
         <p class="text-center text-slate-400 mb-6">Welcome back, gamer! Log in to your account.</p>
 
+        @if (session('success'))
+            <div class="mb-4 rounded-lg bg-green-100 boarder-green-400 p-4 text-green-800">
+                <strong>Success:</strong> {{ session('success') }}
+            </div>
+        @endif
+
         <!-- Display Validation Errors -->
         @if ($errors->any())
             <div class="mb-4 bg-red-500/10 border border-red-500 text-red-400 p-3 rounded-lg text-sm">
@@ -57,10 +63,14 @@
         </form>
 
         <p class="text-center text-sm text-slate-400 mt-6">
-            <a href="{{ url('/forgotpassword') }}" class="text-indigo-400 hover:underline">Forgot Password?</a>
+            <a href="{{ route('password.request') }}" class="text-indigo-400 hover:underline">Forgot Password?</a>
+        </p>
+        <p class="text-center text-sm text-slate-400 mt-3">
+            Don't have an account?
+            <a href="{{ route('registerPage') }}" class="text-indigo-400 hover:underline">Sign up</a>
+        </p>
         <p class="text-center text-sm text-slate-400 mt-6">
-            Don't have an account? 
-            <a href="{{ url('/register') }}" class="text-indigo-400 hover:underline">Sign up</a>
+            <a href="{{ url('/') }}" class="text-indigo-400 hover:underline">Back to homepage</a>
         </p>
     </div>
 

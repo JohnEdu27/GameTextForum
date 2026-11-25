@@ -15,11 +15,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-    foreach (['gamer', 'grandmaster'] as $role) {
+        foreach (['gamer', 'grandmaster'] as $role) {
         User::factory()->create([
-            'name' => '$role User',
-            'email' => '$role@gtf.test',
-            'role' => '$role',
+        'email' => "$role@gtf.test",
+        'role' => $role,
         ]);
+        }
     }
 }

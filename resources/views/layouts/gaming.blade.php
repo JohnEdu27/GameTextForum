@@ -23,7 +23,7 @@
         @endif
     </div>
 
-    <!-- Top Navigation Bar -->
+   
     <header class="w-full px-8 py-4 bg-slate-800/70 backdrop-blur border-b border-slate-700/60 flex justify-between items-center shadow-md">
         <!-- Logo -->
         <div class="flex items-center space-x-2">
@@ -33,7 +33,7 @@
             </a>
         </div>
 
-        <!-- User Info & Logout -->
+
         <div class="flex items-center space-x-4">
             <span class="text-sm text-slate-300">Welcome, <strong class="text-white">{{ Auth::user()->name }}</strong></span>
             <span class="text-xs uppercase tracking-wider text-indigo-300">{{ Auth::user()->role }}</span>
@@ -52,10 +52,9 @@
         </div>
     </header>
 
-    <!-- Main Center Content Container -->
+
     <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-8">
-        
-        <!-- Top Bar of Main Center Area: Date Sorter (Left) & New Post Button (Right) -->
+
         <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-800">
             
             <!-- Date Sorter Dropdown (Top-Left of Main Center) -->
@@ -69,13 +68,11 @@
                 </select>
             </form>
 
-            <!-- Optional Action Button on the Right -->
             <button class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-lg shadow transition">
                 + New Post
             </button>
         </div>
 
-        <!-- Forum Posts Feed Area -->
         <div id="posts-container" class="space-y-4">
             <!-- Example Post Card 1 -->
             <div class="post-card p-5 bg-slate-800/60 border border-slate-700/60 rounded-xl hover:border-slate-600 transition" data-date="2026-11-15">
@@ -89,7 +86,6 @@
                 <div class="text-xs text-indigo-400 font-medium">Posted by {{ Auth::user()->name }}</div>
             </div>
 
-            <!-- Example Post Card 2 -->
             <div class="post-card p-5 bg-slate-800/60 border border-slate-700/60 rounded-xl hover:border-slate-600 transition" data-date="2026-11-10">
                 <div class="flex justify-between items-start mb-2">
                     <h2 class="text-lg font-bold text-white">Welcome to GameText Forum!</h2>
@@ -104,7 +100,6 @@
 
     </main>
 
-    <!-- Simple JavaScript to make the Date Sorter work right away on the frontend -->
     <script>
     document.getElementById('date-sort').addEventListener('change', function(){
         const container = document.getElementById('posts-container');
